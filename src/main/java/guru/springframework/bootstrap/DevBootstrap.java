@@ -4,14 +4,17 @@ import guru.springframework.domain.*;
 import guru.springframework.repositories.CategoryRepository;
 import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.*;
 
+@Slf4j
 @Component
 public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -27,7 +30,9 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
     }
 
     @Override
+    @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        log.debug("Saving recipes' repository...");
         recipeRepository.saveAll(getRecipes());
     }
 
@@ -68,12 +73,16 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
         UnitOfMeasure cupUom = cupUomOptional.get();
         UnitOfMeasure poundsUom = poundsUomOptional.get();
 
+        log.debug("Setting recipe fields...");
+
         Recipe chickRcp = new Recipe();
         chickRcp.setDifficulty(Difficulty.EASY);
         chickRcp.getCategories().add(mexicanCategory);
         chickRcp.setDescription("Spicy Grilled Chicken Tacos");
         chickRcp.setCookTime(15);
-        chickRcp.addNotes("Look for ancho chile powder with the Mexican ingredients at your grocery store, on buy it online. (If you can't find ancho chili powder, you replace the ancho chili, the oregano, and the cumin with 2 1/2 tablespoons regular chili powder, though the flavor won't be quite the same.)");
+        Notes notes = new Notes();
+        notes.setRecipeNotes("Look for ancho chile powder with the Mexican ingredients at your grocery store, on buy it online. (If you can't find ancho chili powder, you replace the ancho chili, the oregano, and the cumin with 2 1/2 tablespoons regular chili powder, though the flavor won't be quite the same.)");
+        chickRcp.setNotes(notes);
         chickRcp.setPrepTime(20);
         chickRcp.setServings(4);
         chickRcp.setDirections("Prepare a gas or charcoal grill for medium-high, direct heat\n" +
@@ -94,6 +103,9 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
                 "Assemble the tacos\n" +
                 "Slice the chicken into strips. On each tortilla, place a small handful of arugula. Top with chicken slices, sliced avocado, radishes, tomatoes, and onion slices. Drizzle with the thinned sour cream. Serve with lime wedges.");
         chickRcp.setUrl("https://www.simplyrecipes.com/recipes/spicy_grilled_chicken_tacos/");
+
+        log.debug("adding ingredients...");
+
         //Ingredients
         chickRcp.addIngredient(new Ingredient("ancho chili powder", new BigDecimal(2), tableSpoon));
         chickRcp.addIngredient(new Ingredient("dried oregano", new BigDecimal(1), teaSpoon));
@@ -106,6 +118,8 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
         chickRcp.addIngredient(new Ingredient("olive oil", new BigDecimal(3), tableSpoon, chickRcp));
         chickRcp.addIngredient(new Ingredient("skinless, boneless chicken thighs", new BigDecimal(1), poundsUom));
         chickRcp.addIngredient(new Ingredient("baby arugula", new BigDecimal(3), cupUom));
+
+        log.debug("Grilled chicken properties are set!");
 
         recipes.add(chickRcp);
         return recipes;
