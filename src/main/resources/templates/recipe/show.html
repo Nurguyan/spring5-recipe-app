@@ -18,7 +18,7 @@
             <div class="card-group">
                 <div class="card.bg-primary">
                     <div class="card-header">
-                        <!--/*@thymesVar id="recipe" type="guru/springframework/domain/Recipe.java"*/-->
+                        <!--/*@thymesVar id="recipe" type="guru.springframework.domain.Recipe"*/-->
                         <h4 class="card-title" th:text="${recipe.description}">Recipe Description</h4>
                     </div>
                     <div class="card-body">
@@ -28,9 +28,9 @@
                             </div>
                             <div class="col-md-9">
                                 <ul>
-                                    <li>cat one</li>
-                                    <li>cat two</li>
-                                    <li>cat three</li>
+                                    <li th:remove="all">cat one</li>
+                                    <li th:remove="all">cat two</li>
+                                    <li th:each="category : ${recipe.categories}" th:text="${category.getDescription()}">cat three</li>
                                 </ul>
                             </div>
                         </div>
@@ -39,13 +39,14 @@
                                 <h6>Prep Time:</h6>
                             </div>
                             <div class="col-md-3">
-                                <h6>30 min</h6>
+                                <!--/*@thymesVar id="recipe" type="guru.springframework.domain.Recipe"*/-->
+                                <h6 th:text="${recipe.getPrepTime()} + ' min'">30 min</h6>
                             </div>
                             <div class="col-md-3">
                                 <h6>Difficulty:</h6>
                             </div>
                             <div class="col-md-3">
-                                <h6>Easy</h6>
+                                <h6 th:text="${recipe.getDifficulty()}">Easy</h6>
                             </div>
                         </div>
                         <div class="row">
@@ -53,13 +54,13 @@
                                 <h6>Cook Time:</h6>
                             </div>
                             <div class="col-md-3">
-                                <h6>30 min</h6>
+                                <h6 th:text="${recipe.getCookTime()} + ' min'">30 min</h6>
                             </div>
                             <div class="col-md-3">
                                 <h6>Servings:</h6>
                             </div>
                             <div class="col-md-3">
-                                <h6>4</h6>
+                                <h6 th:text="${recipe.getServings()}">4</h6>
                             </div>
                         </div>
                         <div class="row">
@@ -67,13 +68,13 @@
                                 <h6>Source:</h6>
                             </div>
                             <div class="col-md-3">
-                                <h6>30 min</h6>
+                                <h6 th:text="${recipe.getSource()}">30 min</h6>
                             </div>
                             <div class="col-md-3">
                                 <h6>URL:</h6>
                             </div>
                             <div class="col-md-3">
-                                <h6>http://www.example.com</h6>
+                                <h6 th:text="${recipe.getUrl()}">http://www.example.com</h6>
                             </div>
                         </div>
                     </div>
@@ -81,15 +82,16 @@
             </div>
                 <div class="card.bg-primary">
                     <div class="card-header">
-                        <!--/*@thymesVar id="recipe" type="guru/springframework/domain/Recipe.java"*/-->
                         <h4 class="card-title">Ingredients</h4>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <ul>
-                                <li>1 Cup of milk</li>
-                                <li>1 Teaspoon of chocolate</li>
-                                <li>1 Teaspoon of sugar</li>
+                                <li th:remove="all">1 Cup of milk</li>
+                                <li th:remove="all">1 Teaspoon of chocolate</li>
+                                <!--/*@thymesVar id="recipe" type="guru.springframework.domain.Recipe"*/-->
+                                <li th:each="ingredient : ${recipe.ingredients}"
+                                    th:text="${ingredient.getAmount() + ' ' + ingredient.uom.getDescription() + ' - ' + ingredient.getDescription()}">1 Teaspoon of sugar</li>
                             </ul>
                         </div>
                     </div>
@@ -102,7 +104,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <p>Lorem ipsum blah blah</p>
+                                <p th:text="${recipe.directions}">Lorem ipsum blah blah</p>
                             </div>
                         </div>
                     </div>
@@ -115,7 +117,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                <p>uiaeryht sweuhg oidsufhgoiw erwhg oidjvbn sghusiphgpjkcjnvskjhjr9n uewhg  i ooeikv eijgwqawrnrdl jeg elsker gwensd,loinv gwendlotyngeqwen gwendloiyn</p>
+                                <p th:text="${recipe.notes.recipeNotes}">uiaeryht sweuhg oidsufhgoiw erwhg oidjvbn sghusiphgpjkcjnvskjhjr9n uewhg  i ooeikv eijgwqawrnrdl jeg elsker gwensd,loinv gwendlotyngeqwen gwendloiyn</p>
                             </div>
                         </div>
                     </div>
